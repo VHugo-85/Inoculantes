@@ -171,7 +171,7 @@ Esta investigación fue desarrollada como propuesta de artículo científico par
 
 ## ⚖️ Licencia
 
-Otros (conforme especificaciones del repositorio)
+MIT
 
 ## 👤 Autor
 
