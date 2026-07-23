@@ -1,7 +1,4 @@
 #Llamando a las librerias
-library (c("dplyr", "car", "agricolae", "broom", "ggplot2",
-           "readr", "ggpubr", "stringr", "tibble", "gridExtra", 
-           "ggplotify", "grid", "gtable", "patchwork", "kablefont", "cowplot", "car"))
 library(car)
 library(performance)
 library(agricolae)
@@ -13,6 +10,7 @@ library(grid)
 library(gtable)
 library(ggplotify)
 library(patchwork)
+
 #Leyendo los datos
 var_prod <- read.csv("C:/Analisis_inoculantes/Iniculantes/Datos/Var_Productivas.csv")
 
@@ -97,7 +95,7 @@ df <- df_vainas %>%
         inner_join(df_rend, by = "trt")
 
 
-# --- El resto de tus vectores estadísticos se mantienen igual ---
+# --- El resto de vectores estadísticos se mantienen igual ---
 Co_Var <- c(cv_vainas, cv_granos, cv_rend)
 Coe_Det <- c(r2_vainas, r2_granos, r2_rend)
 Shapiro_Wilk <- c(sw_test_sqrt_vainas$p.value, sw_test_granos$p.value, sw_test_rend$p.value)

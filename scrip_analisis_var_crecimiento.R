@@ -1,7 +1,21 @@
 #Llamando a las librerias
-library (c("dplyr", "car", "agricolae", "broom", "ggplot2",
-          "readr", "ggpubr", "stringr", "tibble", "gridExtra", 
-          "ggplotify", "grid", "gtable", "patchwork", "kablefont", "cowplot"))
+library(dplyr)
+library(car)
+library(agricolae)
+library(broom)
+library(ggplot2)
+library(readr)
+library(ggpubr)
+library(stringr)
+library(tibble)
+library(gridExtra)
+library(ggplotify)
+library(grid)
+library(gtable)
+library(patchwork)
+library(cowplot)
+library(kableExtra)
+
 
 
 #Leyendo los datos
@@ -18,7 +32,7 @@ anova_alt <- anova(modelo_alt)
 sw_test_alt <- shapiro.test(residuals(modelo_alt))
 lev_test_alt <- leveneTest(Altura ~ Tratamientos, data = var_crecimiento)
 LSD_alt <- LSD.test(modelo_alt, trt = "Tratamientos", group = TRUE, alpha = 0.05)        
-qqnorm(Altura)
+qqnorm(var_crecimiento$Altura)
 res_alt <- residuals(modelo_alt)
 Pred_alt <- predict(modelo_alt)
 df_res_vs_pr_alt <- data.frame(Pred_alt, res_alt)
@@ -32,7 +46,7 @@ anova_hoj <- anova(modelo_hoj)
 sw_test_hoj <- shapiro.test(residuals(modelo_hoj))
 lev_test_hoj <- leveneTest(Numero_de_hojas ~ Tratamientos, data = var_crecimiento)
 LSD_hoj <- LSD.test(modelo_hoj, trt = "Tratamientos", group = TRUE, alpha = 0.05)        
-qqnorm(Numero_de_hojas)
+qqnorm(var_crecimiento$Numero_de_hojas)
 res_hoj <- residuals(modelo_hoj)
 Pred_hoj <- predict(modelo_hoj)
 df_res_vs_pr_hoj <- data.frame(Pred_hoj, res_hoj)
@@ -46,7 +60,7 @@ anova_diam <- anova(modelo_diam)
 sw_test_diam <- shapiro.test(residuals(modelo_hoj))
 lev_test_diam <- leveneTest(Diametro ~ Tratamientos, data = var_crecimiento)
 LSD_diam <- LSD.test(modelo_diam, trt = "Tratamientos", group = TRUE, alpha = 0.05)        
-qqnorm(Diametro)
+qqnorm(var_crecimiento$Diametro)
 res_diam <- residuals(modelo_diam)
 Pred_diam <- predict(modelo_diam)
 df_res_vs_pr_diam <- data.frame(Pred_diam, res_diam)
@@ -261,6 +275,7 @@ graf_final <-
 
 #Nota al pie
 graf_final <- graf_final + plot_annotation(
+        tag_levels = "A",
         caption = "NOTA: Barras con letras diferentes corresponden a tratamientos estadísticamente distintos según la prueba LSD de Fisher (α = 0.05).",
         theme = theme(
                 plot.caption = element_text(size = 10, hjust = 0),  # hjust=0 = izquierda
