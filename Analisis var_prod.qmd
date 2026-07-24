@@ -1,7 +1,7 @@
 ---
 title: "Resiliencia climática en Phaseolus vulgaris L. mediante el uso de microorganismos promotores del crecimiento en el Corredor Seco nicaragüense"
 subtitle: "Análisis de variables productivas: Número de vainas, Número de granos y rendimiento en kg por hectarea"
-author: "Víctor Hugo Rodríguez Salguera"
+author: "?"
 date: last-modified
 lang: es 
 format:
