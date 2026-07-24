@@ -44,7 +44,7 @@ library(kableExtra)
 ## Leyendo los datos
 
 ```{r}
-var_prod <- read.csv("C:/Analisis_inoculantes/Iniculantes/Datos/Var_Productivas.csv")
+var_prod <- read.csv("Datos/Var_Productivas.csv")
 var_prod$Tratamiento <- as.factor(var_prod$Tratamiento)
 var_prod$Bloques <- as.factor(var_prod$Bloques)
 kable(var_prod, 
@@ -215,80 +215,155 @@ gg_tab
 # Graficando el modelo y las comparaciones de medias de las variables productivas
 
 ```{r}
-etiq_zz <- function(x) {
-        ifelse(seq_along(x) %% 2 == 1,
-               paste0(x, "\n"),
-               paste0("\n", x))
+# ==========================================================
+# 1. TABLA DE PARÁMETROS ESTADÍSTICOS (De tus datos)
+# ==========================================================
+# ==========================================================
+# FUNCIÓN ACTUALIZADA CON SEPARADOR DECIMAL POR COMA (,)
+# ==========================================================
+get_header_text <- function(cv, r2, sw, lev, pval) {
+  # Creamos el texto base
+  txt <- paste0(
+    " CV= ", sprintf("%.2f", cv), "%  |",
+    "  R²= ", sprintf("%.2f", r2), "  |",
+    "  Shapiro-Wilk= ", sprintf("%.3f", sw), "  |",
+    "  Levene= ", sprintf("%.3f", lev), "  |",
+    "  p-valor= ", sprintf("%.4f", pval), " "
+  )
+  
+  # Reemplazamos todos los puntos decimales por comas para el texto en español
+  txt_espanol <- gsub("\\.", ",", txt)
+  
+  return(txt_espanol)
 }
-
-#Graficando Numero de vainas por planta
-
+# ==========================================================
+# 2. GRÁFICO 1: Vainas por planta
+# ==========================================================
 graf_vainas <- ggplot(data = df) +
-        geom_col(aes(x = trt, y = sqrt.Vainas_por_planta.),
-                 fill = "#808080", width = 0.5) +
-        geom_text(aes(x = trt, y = sqrt.Vainas_por_planta., label = groups.1),
-                  vjust = -0.5,
-                  size = 4,
-                  fontface = "bold")+
-        scale_x_discrete(labels = function(x) str_replace_all(x, "_+", "\n")) +
-        scale_y_continuous(limits = c(0, 2.8),
-                           breaks = seq(0, 2.8, by = 0.5)) +
-        theme_minimal(base_size = 11) +
-        theme(axis.text.x = element_text(size = 11, face = "bold"),
-              axis.text.y = element_text(size = 11, face = "bold"))+
-        labs(x = "", y = "Número de vainas(Raiz cuadrada)") +
-        theme_minimal(base_size = 10) +
-        theme(axis.text.x  = element_text(size = 10, face = "bold"),
-              axis.text.y  = element_text(size = 10, face = "bold"),
-              axis.title.x = element_text(face = "bold"),
-              axis.title.y = element_text(face = "bold"))
-
-print(graf_vainas)
-
-#Graficando granos por planta
-
+  geom_col(aes(x = trt, y = sqrt.Vainas_por_planta.), fill = "#808080", width = 0.5) +
+  geom_text(aes(x = trt, y = sqrt.Vainas_por_planta., label = groups), 
+            vjust = -0.5, size = 6, fontface = "bold") +
+  
+  # Encabezado con los datos Vainas 
+  annotate(
+    "text", x = 2, y = 3, # Posicionado al centro sobre la 4ta-5ta barra a altura 5.5
+    label = get_header_text(8.96, 0.93, 0.5020192, 0.3226097, 0.00000),
+    size = 4, family = "arial", color = "black", fontface = "bold",
+  ) +
+  annotate("text",
+    x = 8.4,              # Posición en el eje X (puede ser un número o la categoría del eje)
+    y = 3,             # Posición en el eje Y
+    label = "A)",       # El texto que deseas mostrar
+    size = 6,           # Tamaño de la fuente
+    fontface = "bold"   # (Opcional) Texto en negrita
+  ) +
+  scale_x_discrete(labels = function(x) str_replace_all(x, "_+", "\n")) +
+  scale_y_continuous(limits = c(0, 3), breaks = seq(0, 3, by = 0.5)) +
+  theme_minimal(base_size = 10) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    axis.text.x  = element_text(size = 12, face = "bold"),
+    axis.text.y  = element_text(size = 12, face = "bold"),
+    axis.title.x = element_text(size = 12, face = "bold"),
+    axis.title.y = element_text(size = 12, face = "bold")
+  ) +
+  labs(x = "", y = "Vainas por planta (Raíz Cuadrada)")                 
+# ==========================================================
+# 3. GRÁFICO 2: Granos por planta
+# ==========================================================
 graf_granos <- ggplot(data = df) +
-        geom_col(aes(x = trt, y = Granos_por_planta),
-                 fill = "#808080", width = 0.5) +
-        geom_text(aes(x = trt, y = Granos_por_planta, label = groups.1),
-                  vjust = -0.5,
-                  size = 4,
-                  fontface = "bold")+
-        scale_x_discrete(labels = function(x) str_replace_all(x, "_+", "\n")) +
-        scale_y_continuous(limits = c(0, 27),
-                           breaks = seq(0, 27, by = 5)) +
-        theme_minimal(base_size = 11) +
-        theme(axis.text.x = element_text(size = 11, face = "bold"),
-              axis.text.y = element_text(size = 11, face = "bold"))+
-        labs(x = "Tratamientos", y = "Granos por planta") +
-        theme_minimal(base_size = 10) +
-        theme(axis.text.x  = element_text(size = 10, face = "bold"),
-              axis.text.y  = element_text(size = 10, face = "bold"),
-              axis.title.x = element_text(face = "bold"),
-              axis.title.y = element_text(face = "bold"))
+  geom_col(aes(x = trt, y = Granos_por_planta), fill = "#808080", width = 0.5) +
+  geom_text(aes(x = trt, y = Granos_por_planta, label = groups.1), 
+            vjust = -0.5, size = 6, fontface = "bold") +
+# Encabezado con los datos de N° de hojas
+  annotate(
+    "text", x = 2, y = 30, # Ajustado proporcionalmente para la escala de Hojas (0-20)
+    label = get_header_text(23.94, 0.81, 0.2475186, 0.1538083, 0.0000029),
+    size = 4, family = "arial", color = "black", fontface = "bold",
+    ) +
+    annotate("text",
+    x = 8.4,              # Posición en el eje X (puede ser un número o la categoría del eje)
+    y = 30,             # Posición en el eje Y
+    label = "B)",       # El texto que deseas mostrar
+    size = 6,           # Tamaño de la fuente
+    fontface = "bold"   # (Opcional) Texto en negrita
+  ) +
+  scale_x_discrete(labels = function(x) str_replace_all(x, "_+", "\n")) +
+  scale_y_continuous(limits = c(0, 30), breaks = seq(0, 30, by = 4)) +
+  theme_minimal(base_size = 10) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    axis.text.x  = element_text(size = 12, face = "bold"),
+    axis.text.y  = element_text(size = 12, face = "bold"),
+    axis.title.x = element_text(size = 12, face = "bold"),
+    axis.title.y = element_text(size = 12, face = "bold")
+  ) +
+  labs(x = "", y = "Granos por planta")
 
-print(graf_granos) 
-
+# ==========================================================
+# 4. GRÁFICO 3: Rendimiento
+# ==========================================================
 graf_rend <- ggplot(data = df) +
-        geom_col(aes(x = trt, y = Rendimiento),
-                 fill = "#808080", width = 0.5) +
-        geom_text(aes(x = trt, y = Rendimiento, label = groups.2),
-                  vjust = -0.5,
-                  size = 4,
-                  fontface = "bold")+
-        scale_x_discrete(labels = function(x) str_replace_all(x, "_+", "\n")) +
-        scale_y_continuous(limits = c(0, 1100),
-                           breaks = seq(0, 1100, by = 100)) +
-        theme_minimal(base_size = 11) +
-        theme(axis.text.x = element_text(size = 11, face = "bold"),
-              axis.text.y = element_text(size = 11, face = "bold"))+
-        labs(x = "Tratamientos", y = expression(Rendimiento ~ (kg %.% ha^-1))
-        ) +
-        theme_minimal(base_size = 10) +
-        theme(axis.text.x  = element_text(size = 10, face = "bold"),
-              axis.text.y  = element_text(size = 10, face = "bold"),
-              axis.title.x = element_text(face = "bold"),
-              axis.title.y = element_text(face = "bold"))
+  geom_col(aes(x = trt, y = Rendimiento), fill = "#808080", width = 0.5) +
+  geom_text(aes(x = trt, y = Rendimiento, label = groups.2), 
+            vjust = -0.5, size = 5, fontface = "bold") +
+  
+  # Encabezado con los datos de Diámetro (Co_Var: 5.93 | R²: 0.74 | SW: 0.128 | Lev: 0.888 | p: 0.0041)
+  annotate(
+    "text", x = 2, y = 1200, # Posicionado en la altura 5.5 requerida
+    label = get_header_text(24.32, 0.77, 0.1749989, 0.4886082, 0.0000174),
+    size = 4, family = "arial", color = "black", fontface = "bold",
+    ) +
+    annotate("text",
+    x = 8.4,              # Posición en el eje X (puede ser un número o la categoría del eje)
+    y = 1200,             # Posición en el eje Y
+    label = "C)",       # El texto que deseas mostrar
+    size = 6,           # Tamaño de la fuente
+    fontface = "bold"   # (Opcional) Texto en negrita
+  ) +
+  scale_x_discrete(labels = function(x) str_replace_all(x, "_+", "\n")) +
+  scale_y_continuous(limits = c(0, 1200), breaks = seq(0, 1200, by = 100)) +
+  theme_minimal(base_size = 10) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    axis.text.x  = element_text(size = 12, face = "bold"),
+    axis.text.y  = element_text(size = 12, face = "bold"),
+    axis.title.x = element_text(size = 12, face = "bold"),
+    axis.title.y = element_text(size = 12, face = "bold")
+  ) +
+  labs(x = "Tratamientos", y = "Rendimiento")
 
-print(graf_rend)   
+# Imprimir los gráficos
+print(graf_vainas)
+print(graf_granos)
+print(graf_rend)
+
+# 1. Unimos los 3 gráficos verticalmente con / y añadimos la nota
+grafico_compuesto_p <- (graf_vainas / graf_granos / graf_rend) +
+  plot_annotation(
+    caption = "NOTA: Barras con letras diferentes corresponden a tratamientos estadísticamente distintos según la prueba LSD de Fisher (α = 0.05)",
+    theme = theme(
+      plot.caption = element_text(
+        size = 12,
+        face = "bold.italic",
+        hjust = 0,          # Alineado a la izquierda (cambiar a 0.5 para centrar)
+        margin = margin(t = 15) # Espacio sobre la nota
+      )
+    )
+  )
+
+# 2. Visualizar
+print(grafico_compuesto_p)
+
+# Guardar
+ggsave(
+  filename    = "graf_var_prod_ultimo.tiff",
+  plot        = grafico_compuesto_p,
+  device      = "tiff",           # Corregido: antes decía "png"
+  width       = 11,               # Ancho ideal para los nombres de tratamientos
+  height      = 14,               # AUMENTADO: Da espacio vertical suficiente para 3 paneles
+  units       = "in",
+  dpi         = 300,              # Calidad de publicación (300 DPI)
+  compression = "lzw"             # Compresión TIFF estándar para reducir tamaño de archivo
+)
 ```
